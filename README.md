@@ -2,8 +2,8 @@
 
 Symulacja przepływu gazu metodą **Lattice Gas Automata** (model HPP, 4 kierunki) zaimplementowana w CUDA z wizualizacją OpenGL w czasie rzeczywistym.
 
-![Lang: CUDA](https://img.shields.io/badge/CUDA-13.0-76B900?logo=nvidia)
-![C++](https://img.shields.io/badge/C++-17-blue?logo=cplusplus)
+![CUDA](https://img.shields.io/badge/CUDA-supported-76B900?logo=nvidia)
+![C++](https://img.shields.io/badge/C++-supported-blue?logo=cplusplus)
 ![OpenGL](https://img.shields.io/badge/OpenGL-FreeGLUT%20%2B%20GLEW-5586A4?logo=opengl)
 
 ## Spis treści
@@ -41,9 +41,9 @@ W tej implementacji każda komórka przechowuje 4 bity reprezentujące cząstki 
 
 ## Wymagania
 
-| Komponent | Wersja |
+| Komponent | Wymaganie |
 |-----------|--------|
-| **CUDA Toolkit** | 13.0+ (z nvcc) |
+| **CUDA Toolkit** | wymagany (z nvcc) |
 | **CMake** | 3.24+ |
 | **Kompilator C++** | MSVC 2019/2022 (Visual Studio Build Tools) |
 | **Karta graficzna** | NVIDIA z Compute Capability ≥ 7.5 |
