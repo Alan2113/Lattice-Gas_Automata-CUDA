@@ -1,0 +1,14 @@
+# Build folders
+cmake-build-*/
+.idea/
+.vs/
+
+# Biblioteki zewnętrzne
+libs/
+
+# Skompilowane
+*.exe
+*.obj
+*.pdb
+*.ilk
+*.dll
