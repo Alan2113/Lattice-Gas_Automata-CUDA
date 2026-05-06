@@ -221,6 +221,12 @@ void keyboard(unsigned char key, int x, int y) {
         case ' ': paused = !paused; break;
         case '+': case '=': if (speed_factor > 1) speed_factor--; break;
         case '-': case '_': if (speed_factor < 10) speed_factor++; break;
+        case 'c': case 'C': {
+            int4 *empty = (int4*)calloc(Nx * Ny, sizeof(int4));
+            cudaMemcpy(d_current, empty, Nx*Ny*sizeof(int4), cudaMemcpyHostToDevice);
+            free(empty);
+            break;
+        }
         case 'r': case 'R':
             cudaFree(d_current); cudaFree(d_next); cudaFree(d_walls);
             free(h_density); free(h_walls);
@@ -238,6 +244,35 @@ void reshape(int w, int h) {
     gluOrtho2D(0, Nx, 0, Ny);
     glMatrixMode(GL_MODELVIEW);
 }
+
+//additional
+void mouse(int button, int state, int x, int y) {
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+        // Konwertuj pozycję myszy na koordynaty siatki
+        int gx = x * Nx / WINDOW_SIZE;
+        int gy = (WINDOW_SIZE - y) * Ny / WINDOW_SIZE;  // y odwrócone
+
+        // Dodaj cząstki w promieniu 5 wokół klikniętego punktu
+        int4 *temp = (int4*)malloc(Nx * Ny * sizeof(int4));
+        cudaMemcpy(temp, d_current, Nx*Ny*sizeof(int4), cudaMemcpyDeviceToHost);
+
+        for (int dy = -5; dy <= 5; dy++) {
+            for (int dx = -5; dx <= 5; dx++) {
+                int nx = gx + dx, ny = gy + dy;
+                if (nx >= 0 && nx < Nx && ny >= 0 && ny < Ny) {
+                    int idx = nx + ny * Nx;
+                    if (!h_walls[idx]) {
+                        temp[idx] = make_int4(1, 1, 1, 1);
+                    }
+                }
+            }
+        }
+
+        cudaMemcpy(d_current, temp, Nx*Ny*sizeof(int4), cudaMemcpyHostToDevice);
+        free(temp);
+    }
+}
+
 
 int main(int argc, char** argv) {
 
@@ -274,9 +309,12 @@ int main(int argc, char** argv) {
     glutReshapeFunc(reshape);
     glutIdleFunc(idle);
     glutKeyboardFunc(keyboard);
+    glutMouseFunc(mouse);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     printf("SPACJA=pauza | +/-=predkosc | R=reset | ESC=wyjscie\n");
     glutMainLoop();
+
+
     return 0;
 }
